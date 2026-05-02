@@ -37,15 +37,4 @@ const gchar *plugin_licence(void)
 
 struct PluginFeature *plugin_provides(void)
 {
-    static struct PluginFeature features[] = {
-        {PLUGIN_UTILITY, "HTML Signature"},
-        {PLUGIN_NOTHING, NULL}
-    };
-    return features;
-}
-
-/* ЭТА ФУНКЦИЯ КРИТИЧЕСКИ ВАЖНА ДЛЯ CLAWS MAIL */
-gint plugin_interface_version(void)
-{
-    return MIN_PLUGIN_VERSION;
-}
+    static struct PluginFeature features
