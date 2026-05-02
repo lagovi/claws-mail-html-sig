@@ -43,3 +43,9 @@ struct PluginFeature *plugin_provides(void)
     };
     return features;
 }
+
+/* ЭТА ФУНКЦИЯ КРИТИЧЕСКИ ВАЖНА ДЛЯ CLAWS MAIL */
+gint plugin_interface_version(void)
+{
+    return MIN_PLUGIN_VERSION;
+}
