@@ -2,7 +2,7 @@ name: Build Claws Mail Plugin
 
 on:
   push:
-    branches: [ "main", "master" ]
+    branches:[ "main", "master" ]
   workflow_dispatch:
 
 jobs:
@@ -23,19 +23,34 @@ jobs:
           mingw-w64-x86_64-toolchain
           mingw-w64-x86_64-gtk3
           mingw-w64-x86_64-pkgconf
-          mingw-w64-x86_64-claws-mail
+          mingw-w64-x86_64-innoextract
           wget
           tar
-          make
 
-    - name: Download Claws Mail Source Headers
+    - name: Download Claws Mail Source and Windows Binary
       run: |
+        # Качаем исходники для получения заголовочных файлов (API программы)
         wget https://www.claws-mail.org/releases/claws-mail-4.4.0.tar.xz
         tar -xf claws-mail-4.4.0.tar.xz
         mv claws-mail-4.4.0 claws-mail
         
+        # Качаем установщик Windows и потрошим его для получения .exe файла
+        wget https://www.claws-mail.org/win32/claws-mail-4.4.0-1-64bit.exe
+        innoextract claws-mail-4.4.0-1-64bit.exe
+
     - name: Build Plugin DLL
-      run: make
+      run: |
+        # Находим распакованный claws-mail.exe и компилируем плагин
+        CLAWS_EXE=$(find app -name "claws-mail.exe" | head -n 1)
+        
+        gcc -shared -O2 -Wall \
+          -I claws-mail/src \
+          -I claws-mail/src/common \
+          $(pkg-config --cflags gtk+-3.0 glib-2.0) \
+          -o html_sig.dll html_sig.c \
+          $(pkg-config --libs gtk+-3.0 glib-2.0) \
+          -Wl,--enable-auto-import \
+          "$CLAWS_EXE"
 
     - name: Upload DLL to Artifacts
       uses: actions/upload-artifact@v4
