@@ -35,6 +35,17 @@ const gchar *plugin_licence(void)
     return "GPL";
 }
 
+const gchar *plugin_version(void)
+{
+    return VERSION;
+}
+
 struct PluginFeature *plugin_provides(void)
 {
-    static struct PluginFeature features
+    static struct PluginFeature f[2];
+    f[0].type = PLUGIN_UTILITY;
+    f[0].name = "HTML Signature";
+    f[1].type = PLUGIN_NOTHING;
+    f[1].name = NULL;
+    return f;
+}
