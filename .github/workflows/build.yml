@@ -41,7 +41,7 @@ jobs:
         CLAWS_EXE=$(find app -name "claws-mail.exe" | head -n 1)
         echo "Found executable: $CLAWS_EXE"
         
-        gcc -shared -O2 -Wall \
+        gcc -shared -O2 -Wall -s -static-libgcc -fno-stack-protector \
           -I claws-mail/src \
           -I claws-mail/src/common \
           $(pkg-config --cflags gtk+-3.0 glib-2.0) \
