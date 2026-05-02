@@ -2,7 +2,7 @@ name: Build Claws Mail Plugin
 
 on:
   push:
-    branches:[ "main", "master" ]
+    branches: [ "main", "master" ]
   workflow_dispatch:
 
 jobs:
