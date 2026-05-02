@@ -39,17 +39,21 @@ jobs:
     - name: Build Plugin DLL
       run: |
         CLAWS_EXE=$(find app -name "claws-mail.exe" | head -n 1)
-        echo "Found executable: $CLAWS_EXE"
+        GLIB_DLL=$(find app -name "libglib-2.0-0.dll" | head -n 1)
         
+        echo "Linking against native binaries:"
+        echo "$CLAWS_EXE"
+        echo "$GLIB_DLL"
+        
+        # Компилируем, подключая ТОЛЬКО родные библиотеки Claws Mail (избавляемся от DLL Hell)
         gcc -shared -O2 -Wall -s -static-libgcc -fno-stack-protector \
           -I claws-mail/src \
           -I claws-mail/src/common \
           $(pkg-config --cflags gtk+-3.0 glib-2.0) \
           -o html_sig.dll html_sig.c \
-          $(pkg-config --libs gtk+-3.0 glib-2.0) \
           -Wl,--enable-auto-import \
-          -Wl,--allow-multiple-definition \
-          "$CLAWS_EXE"
+          "$CLAWS_EXE" \
+          "$GLIB_DLL"
 
     - name: Upload DLL to Artifacts
       uses: actions/upload-artifact@v4
